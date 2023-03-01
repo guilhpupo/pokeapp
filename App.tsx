@@ -13,6 +13,7 @@ import { PokemonEntity } from "./src/Modules/Pokemons/Domain/Entities/PokemonEnt
 
 import { TypeEntity } from "./src/Modules/Pokemons/Domain/Entities/TypeEntity";
 import PokemonCard from "./src/Modules/Pokemons/Presenter/Components/PokemonCard";
+import Logo from "./src/Modules/Shared/Components/Logo";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -38,6 +39,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Logo />
       <PokemonCard pokemon={pokemon} />
       <StatusBar style="auto" />
     </View>

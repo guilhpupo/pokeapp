@@ -9,9 +9,11 @@ import {
   Fredoka_600SemiBold,
 } from "@expo-google-fonts/fredoka";
 import Home from "./src/Modules/Pokemons/Presenter/Screens/Home";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient();
 
 const App = () => {
   const [fontsLoaded] = useFonts({
@@ -31,12 +33,19 @@ const App = () => {
   }
 
   return (
-    <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#003264",
+      }}
       onLayout={onLayoutRootView}
     >
-      <Home />
-    </View>
+      <QueryClientProvider client={queryClient}>
+        <Home />
+      </QueryClientProvider>
+    </SafeAreaView>
   );
 };
 

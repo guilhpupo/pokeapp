@@ -13,17 +13,13 @@ export type ListPokemonsParams = {
 
 @singleton()
 export class ListPokemonsUseCase
-  implements
-    IUseCase<ListPokemonsParams, Promise<PokemonEntity[] | FailureEntity>>
+  implements IUseCase<ListPokemonsParams, Promise<PokemonEntity[]>>
 {
   constructor(
     @inject("PokemonsRepository")
     protected readonly repository: IPokemonsRepository
   ) {}
-  async execute({
-    skip,
-    take,
-  }: ListPokemonsParams): Promise<PokemonEntity[] | FailureEntity> {
+  async execute({ skip, take }: ListPokemonsParams): Promise<PokemonEntity[]> {
     return await this.repository.list({ skip, take });
   }
 }

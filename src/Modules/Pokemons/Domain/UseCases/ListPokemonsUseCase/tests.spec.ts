@@ -15,7 +15,6 @@ const defaultParams: ListPokemonsParams = {
   skip: 0,
   take: 20,
 };
-const failure = new FailureEntity({ fileName: "test", message: "test" });
 
 describe("ListPokemonsUseCase", () => {
   afterEach(() => {
@@ -27,13 +26,5 @@ describe("ListPokemonsUseCase", () => {
     expect(pokemonRepositoryMock.list).toBeCalledTimes(1);
     expect(result).not.toBeInstanceOf(FailureEntity);
     expect(result).toBeInstanceOf(Array<PokemonEntity>);
-  });
-  it("should return a failure", async () => {
-    pokemonRepositoryMock.list.mockResolvedValueOnce(failure);
-
-    const result = await useCase.execute(defaultParams);
-
-    expect(pokemonRepositoryMock.list).toBeCalledTimes(1);
-    expect(result).toBeInstanceOf(FailureEntity);
   });
 });

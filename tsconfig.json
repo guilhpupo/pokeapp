@@ -3,7 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "target": "es5",
-    "lib": ["es6"],
+    "lib": ["es2019"],
     "types": ["reflect-metadata", "@types/jest"],
     "module": "commonjs",
     "moduleResolution": "node",

@@ -26,12 +26,12 @@ describe("Pokemons Repository", () => {
     expect(pokemonsDataSourceMock.list).toBeCalledTimes(1);
     expect(result).toBeInstanceOf(Array<PokemonEntity>);
   });
-  it("should return a failure entity with a message if datasource throws", async () => {
+  it("should return an empty array if datasource throws", async () => {
     pokemonsDataSourceMock.list.mockRejectedValueOnce(new Error("failure"));
     const result = await repository.list(defaultParams);
 
     expect(pokemonsDataSourceMock.list).toBeCalledTimes(1);
-    expect(result).toBeInstanceOf(FailureEntity);
-    expect((result as FailureEntity).props.message).toBeDefined();
+    expect(result).toBeInstanceOf(Array<PokemonEntity>);
+    expect(result).toHaveLength(0);
   });
 });

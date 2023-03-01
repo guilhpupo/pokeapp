@@ -25,6 +25,12 @@ export class PokeAPIPokemonsDataSource implements IPokemonsDataSource {
       const findSpeciesResponse = await this._axiosClient.get(
         `pokemon-species/${findResourceResponse.data.id}`
       );
+
+      const flavorTextsEntries: Array<{
+        flavor_text: string;
+        language: { name: string };
+      }> = findSpeciesResponse.data.flavor_text_entries;
+
       pokemons.push(
         new PokemonEntity({
           name: findResourceResponse.data.name,
@@ -33,7 +39,9 @@ export class PokeAPIPokemonsDataSource implements IPokemonsDataSource {
               .front_default,
           number: findResourceResponse.data.id,
           description:
-            findSpeciesResponse.data.flavor_text_entries[0].flavor_text,
+            flavorTextsEntries.find(
+              (flavorText) => flavorText.language.name === "en"
+            )?.flavor_text || "",
           primaryType: new TypeEntity({
             name: findResourceResponse.data.types[0].type.name,
           }),

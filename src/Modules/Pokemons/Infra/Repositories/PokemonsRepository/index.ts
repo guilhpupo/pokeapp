@@ -11,17 +11,11 @@ export class PokemonsRepository implements IPokemonsRepository {
     @inject("PokemonsDataSource")
     protected readonly dataSource: IPokemonsDataSource
   ) {}
-  async list({
-    skip,
-    take,
-  }: ListPokemonsParams): Promise<PokemonEntity[] | FailureEntity> {
+  async list({ skip, take }: ListPokemonsParams): Promise<PokemonEntity[]> {
     try {
       return await this.dataSource.list({ skip, take });
     } catch (error) {
-      return new FailureEntity({
-        fileName: "PokemonsRepository",
-        message: "An error ocurred when fetching pokémons",
-      });
+      return [];
     }
   }
 }

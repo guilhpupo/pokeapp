@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#F0F0F0",
     padding: 20,
+    marginVertical: 5,
   },
   name: {
     fontSize: 16,
@@ -21,8 +22,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   picture: {
-    width: 120,
-    height: 120,
+    width: 150,
+    height: 150,
     marginRight: 20,
   },
   info: {
@@ -32,11 +33,13 @@ const styles = StyleSheet.create({
     lineHeight: 14.52,
     fontSize: 12,
     color: "#290505",
+    maxWidth: 150,
   },
   types: {
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
+    marginTop: 8,
   },
 });
 

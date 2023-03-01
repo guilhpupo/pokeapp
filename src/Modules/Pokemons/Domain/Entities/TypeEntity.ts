@@ -18,9 +18,7 @@ type Props = {
     | "ice"
     | "dragon"
     | "dark"
-    | "fairy"
-    | "unknown"
-    | "shadow";
+    | "fairy";
 };
 export class TypeEntity implements IEntity<Props> {
   constructor(public props: Props) {}

@@ -1,56 +1,43 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "./src/Modules/Shared/Container";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+
 import {
   useFonts,
   Fredoka_300Light,
   Fredoka_400Regular,
   Fredoka_600SemiBold,
 } from "@expo-google-fonts/fredoka";
+import Home from "./src/Modules/Pokemons/Presenter/Screens/Home";
+import { View } from "react-native";
 
-import { PokemonEntity } from "./src/Modules/Pokemons/Domain/Entities/PokemonEntity";
+SplashScreen.preventAutoHideAsync();
 
-import { TypeEntity } from "./src/Modules/Pokemons/Domain/Entities/TypeEntity";
-import PokemonCard from "./src/Modules/Pokemons/Presenter/Components/PokemonCard";
-import Logo from "./src/Modules/Shared/Components/Logo";
-
-export default function App() {
-  let [fontsLoaded] = useFonts({
+const App = () => {
+  const [fontsLoaded] = useFonts({
     Fredoka_300Light,
     Fredoka_400Regular,
     Fredoka_600SemiBold,
   });
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
     return null;
   }
 
-  const pokemon = new PokemonEntity({
-    name: "Bulbasaur",
-    description:
-      "A strange seed was\nplanted on its\nback at birth.\fThe plant sprouts\nand grows with\nthis POKéMON.",
-    number: 1,
-    imageUrl:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    primaryType: new TypeEntity({ name: "grass" }),
-    secondaryType: new TypeEntity({ name: "poison" }),
-  });
-
   return (
-    <View style={styles.container}>
-      <Logo />
-      <PokemonCard pokemon={pokemon} />
-      <StatusBar style="auto" />
+    <View
+      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      onLayout={onLayoutRootView}
+    >
+      <Home />
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#003264",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+export default App;

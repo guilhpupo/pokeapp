@@ -1,68 +1,39 @@
-import { ListPokemonsUseCase, ListPokemonsUseCaseParams } from ".";
+import { ListPokemonsParams, ListPokemonsUseCase } from ".";
+
 import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
 import { PokemonEntity } from "../../Entities/PokemonEntity";
-import { TypeEntity } from "../../Entities/TypeEntity";
+
 import { IPokemonsRepository } from "../../Repositories/IPokemonsRepository";
 
-const defaultParams: ListPokemonsUseCaseParams = {
+const pokemonRepositoryMock: jest.MockedObject<IPokemonsRepository> = {
+  list: jest.fn(),
+};
+
+pokemonRepositoryMock.list.mockResolvedValue([] as PokemonEntity[]);
+const useCase = new ListPokemonsUseCase(pokemonRepositoryMock);
+const defaultParams: ListPokemonsParams = {
   skip: 0,
   take: 20,
 };
+const failure = new FailureEntity({ fileName: "test", message: "test" });
 
-const sucessListPokemons = jest.fn(
-  async (params: { skip: number; take: number }): Promise<PokemonEntity[]> => {
-    const pokemon = new PokemonEntity({
-      name: "test",
-      description: "test",
-      imageUrl: "test",
-      number: 1,
-      primaryType: new TypeEntity({ name: "normal" }),
-    });
-
-    const result: PokemonEntity[] = [];
-
-    for (let addTimes = 0; addTimes < params.take; addTimes++) {
-      result.push(pokemon);
-    }
-
-    return result;
-  }
-);
-const failListPokemons = jest.fn(
-  async (params: { skip: number; take: number }): Promise<FailureEntity> => {
-    const result = new FailureEntity({ fileName: "test", message: "test" });
-
-    return result;
-  }
-);
-
-describe("list pokemons use case", () => {
+describe("ListPokemonsUseCase", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it("should return a list of pokemons", async () => {
-    class PokemonsRepositoryMock implements IPokemonsRepository {
-      list = sucessListPokemons;
-    }
-    const repository = new PokemonsRepositoryMock();
-    const useCase = new ListPokemonsUseCase(repository);
-
     const result = await useCase.execute(defaultParams);
 
-    expect(repository.list).toBeCalled();
+    expect(pokemonRepositoryMock.list).toBeCalledTimes(1);
     expect(result).not.toBeInstanceOf(FailureEntity);
-    expect(result).toBeInstanceOf(Array);
-
-    const list = result as PokemonEntity[];
-    expect(list[0]).toBeInstanceOf(PokemonEntity);
+    expect(result).toBeInstanceOf(Array<PokemonEntity>);
   });
   it("should return a failure", async () => {
-    class PokemonsRepositoryMock implements IPokemonsRepository {
-      list = failListPokemons;
-    }
-    const repository = new PokemonsRepositoryMock();
-    const useCase = new ListPokemonsUseCase(repository);
+    pokemonRepositoryMock.list.mockResolvedValueOnce(failure);
 
     const result = await useCase.execute(defaultParams);
 
-    expect(repository.list).toBeCalled();
+    expect(pokemonRepositoryMock.list).toBeCalledTimes(1);
     expect(result).toBeInstanceOf(FailureEntity);
   });
 });

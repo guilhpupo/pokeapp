@@ -1,10 +1,6 @@
 import { PokemonEntity } from "../../Domain/Entities/PokemonEntity";
-
-type ListParams = {
-  skip: number;
-  take: number;
-};
+import { ListPokemonsParams } from "../../Domain/UseCases/ListPokemonsUseCase";
 
 export interface IPokemonsDataSource {
-  list(params: ListParams): Promise<PokemonEntity[]>;
+  list(params: ListPokemonsParams): Promise<PokemonEntity[]>;
 }

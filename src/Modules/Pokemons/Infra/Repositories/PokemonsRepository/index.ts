@@ -1,29 +1,26 @@
-import { inject } from "inversify";
-import { injectable } from "inversify/lib/annotation/injectable";
-import { Registry } from "../../../../Shared/ContainerRegistry";
+import { inject, injectable } from "tsyringe";
 import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
-
 import { PokemonEntity } from "../../../Domain/Entities/PokemonEntity";
 import { IPokemonsRepository } from "../../../Domain/Repositories/IPokemonsRepository";
+import { ListPokemonsParams } from "../../../Domain/UseCases/ListPokemonsUseCase";
 import { IPokemonsDataSource } from "../../DataSources/IPokemonsDataSource";
 
 @injectable()
 export class PokemonsRepository implements IPokemonsRepository {
   constructor(
-    @inject(Registry.PokemonsDataSource)
-    private _dataSource: IPokemonsDataSource
+    @inject("PokemonsDataSource")
+    protected readonly dataSource: IPokemonsDataSource
   ) {}
-  async list(params: {
-    skip: number;
-    take: number;
-  }): Promise<PokemonEntity[] | FailureEntity> {
+  async list({
+    skip,
+    take,
+  }: ListPokemonsParams): Promise<PokemonEntity[] | FailureEntity> {
     try {
-      const result = await this._dataSource.list(params);
-      return result;
+      return await this.dataSource.list({ skip, take });
     } catch (error) {
       return new FailureEntity({
         fileName: "PokemonsRepository",
-        message: "An error ocurred when fetching pokémons.",
+        message: "An error ocurred when fetching pokémons",
       });
     }
   }

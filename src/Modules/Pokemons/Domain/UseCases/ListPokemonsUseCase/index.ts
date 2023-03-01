@@ -1,30 +1,29 @@
-import { inject } from "inversify";
-import { Registry } from "../../../../Shared/ContainerRegistry";
+import { inject, singleton } from "tsyringe";
+
 import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
 import { IUseCase } from "../../../../Shared/Interfaces/IUseCase";
 
 import { PokemonEntity } from "../../Entities/PokemonEntity";
 import { IPokemonsRepository } from "../../Repositories/IPokemonsRepository";
 
-export type ListPokemonsUseCaseParams = {
-  skip?: number;
-  take?: number;
+export type ListPokemonsParams = {
+  skip: number;
+  take: number;
 };
+
+@singleton()
 export class ListPokemonsUseCase
   implements
-    IUseCase<
-      ListPokemonsUseCaseParams,
-      Promise<PokemonEntity[] | FailureEntity>
-    >
+    IUseCase<ListPokemonsParams, Promise<PokemonEntity[] | FailureEntity>>
 {
   constructor(
-    @inject(Registry.PokemonsRepository)
-    private _repository: IPokemonsRepository
+    @inject("PokemonsRepository")
+    protected readonly repository: IPokemonsRepository
   ) {}
   async execute({
-    skip = 0,
-    take = 20,
-  }: ListPokemonsUseCaseParams): Promise<PokemonEntity[] | FailureEntity> {
-    return await this._repository.list({ skip, take });
+    skip,
+    take,
+  }: ListPokemonsParams): Promise<PokemonEntity[] | FailureEntity> {
+    return await this.repository.list({ skip, take });
   }
 }

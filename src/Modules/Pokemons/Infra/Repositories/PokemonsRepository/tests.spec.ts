@@ -1,50 +1,37 @@
 import { PokemonsRepository } from ".";
-import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
-import { PokemonEntity } from "../../../Domain/Entities/PokemonEntity";
+
 import { IPokemonsDataSource } from "../../DataSources/IPokemonsDataSource";
+import { PokemonEntity } from "../../../Domain/Entities/PokemonEntity";
+import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
+
+const pokemonsDataSourceMock: jest.MockedObject<IPokemonsDataSource> = {
+  list: jest.fn(),
+};
+const repository = new PokemonsRepository(pokemonsDataSourceMock);
+
+pokemonsDataSourceMock.list.mockResolvedValue([]);
 
 const defaultParams = {
   skip: 0,
   take: 20,
 };
-const sucessListPokemons = jest.fn(
-  async (params: { skip: number; take: number }): Promise<PokemonEntity[]> => {
-    const result: PokemonEntity[] = [];
 
-    return result;
-  }
-);
-const failListPokemons = jest.fn(
-  async (params: { skip: number; take: number }): Promise<PokemonEntity[]> => {
-    throw new Error("Error test");
-  }
-);
 describe("Pokemons Repository", () => {
-  it("should return a list of pokémons", async () => {
-    class PokemonsDataSourceMock implements IPokemonsDataSource {
-      list = sucessListPokemons;
-    }
-    const dataSource = new PokemonsDataSourceMock();
-    const repository = new PokemonsRepository(dataSource);
-
-    const result = await repository.list(defaultParams);
-
-    expect(dataSource.list).toBeCalled();
-    expect(result).toBeInstanceOf(Array);
+  afterEach(() => {
+    jest.clearAllMocks();
   });
-  it("should return a failure with a message", async () => {
-    class PokemonsDataSourceMock implements IPokemonsDataSource {
-      list = failListPokemons;
-    }
-    const dataSource = new PokemonsDataSourceMock();
-    const repository = new PokemonsRepository(dataSource);
-
+  it("should return a list of pokémons", async () => {
     const result = await repository.list(defaultParams);
 
-    expect(dataSource.list).toBeCalled();
-    expect(result).toBeInstanceOf(FailureEntity);
+    expect(pokemonsDataSourceMock.list).toBeCalledTimes(1);
+    expect(result).toBeInstanceOf(Array<PokemonEntity>);
+  });
+  it("should return a failure entity with a message if datasource throws", async () => {
+    pokemonsDataSourceMock.list.mockRejectedValueOnce(new Error("failure"));
+    const result = await repository.list(defaultParams);
 
-    const failure = result as FailureEntity;
-    expect(failure.props.message).toBeDefined();
+    expect(pokemonsDataSourceMock.list).toBeCalledTimes(1);
+    expect(result).toBeInstanceOf(FailureEntity);
+    expect((result as FailureEntity).props.message).toBeDefined();
   });
 });

@@ -2,7 +2,7 @@ import { PokemonEntity } from "../../../Domain/Entities/PokemonEntity";
 import { IPokemonsDataSource } from "../../../Infra/DataSources/IPokemonsDataSource";
 import axios from "axios";
 import { TypeEntity } from "../../../Domain/Entities/TypeEntity";
-import { injectable } from "inversify";
+import { injectable } from "tsyringe";
 
 @injectable()
 export class PokeAPIPokemonsDataSource implements IPokemonsDataSource {

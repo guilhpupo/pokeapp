@@ -1,16 +1,14 @@
-import "reflect-metadata";
+import "./src/Modules/Shared/Container";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { container, Registry } from "./src/Modules/Shared/ContainerRegistry";
+import { container } from "tsyringe";
 import { ListPokemonsUseCase } from "./src/Modules/Pokemons/Domain/UseCases/ListPokemonsUseCase";
 import { useEffect } from "react";
 
 export default function App() {
-  const listPokemonsUseCase = container.get<ListPokemonsUseCase>(
-    Registry.ListPokemonsUseCase
-  );
+  const useCase = container.resolve(ListPokemonsUseCase);
   useEffect(() => {
-    listPokemonsUseCase.execute({}).then((result) => console.log(result));
+    useCase.execute({ skip: 0, take: 1 }).then((result) => console.log(result));
   }, []);
   return (
     <View style={styles.container}>

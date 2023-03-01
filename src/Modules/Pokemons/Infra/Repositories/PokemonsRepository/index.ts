@@ -1,10 +1,18 @@
+import { inject } from "inversify";
+import { injectable } from "inversify/lib/annotation/injectable";
+import { Registry } from "../../../../Shared/ContainerRegistry";
 import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
+
 import { PokemonEntity } from "../../../Domain/Entities/PokemonEntity";
 import { IPokemonsRepository } from "../../../Domain/Repositories/IPokemonsRepository";
 import { IPokemonsDataSource } from "../../DataSources/IPokemonsDataSource";
 
+@injectable()
 export class PokemonsRepository implements IPokemonsRepository {
-  constructor(private _dataSource: IPokemonsDataSource) {}
+  constructor(
+    @inject(Registry.PokemonsDataSource)
+    private _dataSource: IPokemonsDataSource
+  ) {}
   async list(params: {
     skip: number;
     take: number;

@@ -1,5 +1,8 @@
+import { inject } from "inversify";
+import { Registry } from "../../../../Shared/ContainerRegistry";
 import { FailureEntity } from "../../../../Shared/Interfaces/FailureEntity";
 import { IUseCase } from "../../../../Shared/Interfaces/IUseCase";
+
 import { PokemonEntity } from "../../Entities/PokemonEntity";
 import { IPokemonsRepository } from "../../Repositories/IPokemonsRepository";
 
@@ -14,7 +17,10 @@ export class ListPokemonsUseCase
       Promise<PokemonEntity[] | FailureEntity>
     >
 {
-  constructor(private _repository: IPokemonsRepository) {}
+  constructor(
+    @inject(Registry.PokemonsRepository)
+    private _repository: IPokemonsRepository
+  ) {}
   async execute({
     skip = 0,
     take = 20,
